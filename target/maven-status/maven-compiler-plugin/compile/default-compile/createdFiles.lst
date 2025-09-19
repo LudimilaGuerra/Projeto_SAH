@@ -1,0 +1,7 @@
+com\sah\dominio\Paciente.class
+com\sah\apresentacao\ControladorCardapio.class
+com\sah\dominio\Cardapio.class
+com\sah\dominio\ServicoCardapio.class
+com\sah\aplicacao\Principal.class
+com\sah\apresentacao\VisaoConsole.class
+com\sah\infraestrutura\RepositorioCardapio.class
