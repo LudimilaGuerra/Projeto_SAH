@@ -62,9 +62,8 @@ public class ServicoPaciente {
         String formatoLinha = "| %-30s | %-12d | %-20s | %-20s | %-20s | %-6s |%n";
         
         for (Paciente p : pacientes) {
-            // CORREÇÃO AQUI: O primeiro argumento agora é p.getNome()
             System.out.format(formatoLinha,
-                              p.getnome(), // Informação do Nome (vinda do JOIN)
+                              p.getnome(),
                               p.getIdUser(),
                               p.getRestricaoAlimentar(),
                               p.getAlergias(),
