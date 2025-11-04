@@ -30,7 +30,7 @@ public class RepositorioPaciente {
 
     if (!userExiste) {
         System.out.println("Erro de Integridade: O Usuário com ID " + idUser + " não está cadastrado na tabela USUARIO.");
-        return; // Sai se o usuário não existir
+        return;
     }
         
         String sqlVerificacao = "SELECT 1 FROM Paciente WHERE FK_ID_User = ?";
@@ -52,14 +52,13 @@ public class RepositorioPaciente {
         return;
     }
 
-    // 2. Verifica o resultado da consulta
+    
     if (pacienteExiste) {
         System.out.println(" Paciente JA CADASTRADO! Nao e possível inserir o usuário ID: " + paciente.getIdUser());
         return; // Sai do método e não executa a inserção
     }
-    // ------------------------------------------
 
-    // --- LÓGICA DE INSERÇÃO (Se o paciente NÃO existe) ---
+    //LÓGICA DE INSERÇÃO
     String sqlInsercao = "INSERT INTO Paciente (FK_ID_User, Restricao_Alimentar, Alergias, Preferencias, Quarto) VALUES (?, ?, ?, ?, ?)";
 
     try (Connection conn = Conexao.getConnection();
