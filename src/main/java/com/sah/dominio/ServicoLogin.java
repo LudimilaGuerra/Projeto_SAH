@@ -15,8 +15,8 @@ import java.sql.SQLException;
  */
 public class ServicoLogin {
     /**
-     * @param login o login digitado
-     * @param senha A senha digitada pelo usuário
+     * @param 
+     * @param 
      * @return 
      */
     public boolean autenticar(String login, String senha) {
@@ -27,7 +27,6 @@ public class ServicoLogin {
         try (Connection conexao = Conexao.getConnection();
              PreparedStatement stmt = conexao.prepareStatement(sql)) {
              
-            // Define os parâmetros da query com os dados do usuário.
             stmt.setString(1, login);
             stmt.setString(2, senha);
 
