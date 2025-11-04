@@ -1,22 +1,16 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.sah.aplicacao;
+import com.sah.apresentacao.VisaoConsole;
 
 /**
  *
- * @author porti
+ * @author Josias
  */
-package com.sah.aplicacao;
+public class projetofinal {
 
-import com.sah.apresentacao.VisaoConsole;
-
-package com.sah.aplicacao;
-
-import com.sah.apresentacao.VisaoConsole;
-
-public class Principal {
     public static void main(String[] args) {
         System.out.println("=======================================");
         System.out.println("     SISTEMA DE ALIMENTAÇÃO HOSPITALAR ");
@@ -28,4 +22,3 @@ public class Principal {
         System.out.println("\nSistema encerrado. Até logo!");
     }
 }
-

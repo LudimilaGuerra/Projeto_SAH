@@ -1,18 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.sah.dominio;
-
-/**
- *
- * @author porti
- */
 package com.sah.dominio;
 
 public class Paciente {
     private int idPaciente;
     private int idUser;
+    private String nome;
     private String restricaoAlimentar;
     private String alergias;
     private String preferencias;
@@ -20,9 +11,10 @@ public class Paciente {
 
     public Paciente() {}
 
-    public Paciente(int idPaciente, int idUser, String restricaoAlimentar, String alergias, String preferencias, String quarto) {
+    public Paciente(int idPaciente, int idUser,String nome, String restricaoAlimentar, String alergias, String preferencias, String quarto) {
         this.idPaciente = idPaciente;
         this.idUser = idUser;
+        this.nome = nome;
         this.restricaoAlimentar = restricaoAlimentar;
         this.alergias = alergias;
         this.preferencias = preferencias;
@@ -34,6 +26,9 @@ public class Paciente {
 
     public int getIdUser() { return idUser; }
     public void setIdUser(int idUser) { this.idUser = idUser; }
+    
+    public String getnome() { return nome; }
+    public void setnome(String nome) { this.nome = nome; }
 
     public String getRestricaoAlimentar() { return restricaoAlimentar; }
     public void setRestricaoAlimentar(String restricaoAlimentar) { this.restricaoAlimentar = restricaoAlimentar; }
@@ -49,8 +44,16 @@ public class Paciente {
 
     @Override
     public String toString() {
-        return "Paciente [ID=" + idPaciente + ", ID_User=" + idUser +
-                ", Restricao=" + restricaoAlimentar + ", Alergias=" + alergias +
-                ", Preferencias=" + preferencias + ", Quarto=" + quarto + "]";
+        return "Paciente{" +
+                "idPaciente=" + idPaciente +
+                ", idUser=" + idUser +
+                "nome=" + nome +
+                ", restricaoAlimentar='" + restricaoAlimentar + '\'' +
+                ", alergias='" + alergias + '\'' +
+                ", preferencias='" + preferencias + '\'' +
+                ", quarto='" + quarto + '\'' +
+                '}';
     }
+
 }
+

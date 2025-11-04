@@ -1,10 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.sah.infraestrutura;
-
-
 package com.sah.infraestrutura;
 
 import com.sah.dominio.Paciente;
@@ -13,77 +6,109 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RepositorioPaciente {
-    private static final String URL = "jdbc:mysql://localhost:3306/sah";
-    private static final String USER = "root";
-    private static final String PASSWORD = "1234";
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    public void inserir(Paciente paciente) {
+        int idUser = paciente.getIdUser(); 
+
+    String sqlUserExiste = "SELECT 1 FROM Usuario WHERE ID_User = ?";
+    boolean userExiste = false;
+
+    try (Connection conn = Conexao.getConnection();
+         PreparedStatement stmtUser = conn.prepareStatement(sqlUserExiste)) {
+
+        stmtUser.setInt(1, idUser);
+        
+        try (ResultSet rs = stmtUser.executeQuery()) {
+            if (rs.next()) {
+                userExiste = true; 
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Erro ao verificar a existência do usuário: " + e.getMessage());
+        return; 
     }
 
-    // CREATE
-    public void criar(Paciente p) {
-        String sql = "INSERT INTO Paciente (ID_User, Restricao_Alimentar, Alergias, Preferencias, Quarto) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, p.getIdUser());
-            stmt.setString(2, p.getRestricaoAlimentar());
-            stmt.setString(3, p.getAlergias());
-            stmt.setString(4, p.getPreferencias());
-            stmt.setString(5, p.getQuarto());
-            stmt.executeUpdate();
-            System.out.println("✅ Paciente cadastrado!");
-        } catch (SQLException e) {
-            System.out.println("Erro ao criar paciente: " + e.getMessage());
+    if (!userExiste) {
+        System.out.println("Erro de Integridade: O Usuário com ID " + idUser + " não está cadastrado na tabela USUARIO.");
+        return; // Sai se o usuário não existir
+    }
+        
+        String sqlVerificacao = "SELECT 1 FROM Paciente WHERE FK_ID_User = ?";
+    boolean pacienteExiste = false;
+
+    try (Connection conn = Conexao.getConnection();
+         PreparedStatement stmtVerificacao = conn.prepareStatement(sqlVerificacao)) {
+
+        stmtVerificacao.setInt(1, paciente.getIdUser());
+        
+        try (ResultSet rs = stmtVerificacao.executeQuery()) {
+            if (rs.next()) {
+                pacienteExiste = true; // Se encontrar pelo menos uma linha, o paciente existe
+            }
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Erro ao verificar a existência do paciente: " + e.getMessage());
+        return;
+    }
+
+    // 2. Verifica o resultado da consulta
+    if (pacienteExiste) {
+        System.out.println(" Paciente JA CADASTRADO! Nao e possível inserir o usuário ID: " + paciente.getIdUser());
+        return; // Sai do método e não executa a inserção
+    }
+    // ------------------------------------------
+
+    // --- LÓGICA DE INSERÇÃO (Se o paciente NÃO existe) ---
+    String sqlInsercao = "INSERT INTO Paciente (FK_ID_User, Restricao_Alimentar, Alergias, Preferencias, Quarto) VALUES (?, ?, ?, ?, ?)";
+
+    try (Connection conn = Conexao.getConnection();
+         PreparedStatement stmtInsercao = conn.prepareStatement(sqlInsercao)) {
+
+        stmtInsercao.setInt(1, paciente.getIdUser());
+        stmtInsercao.setString(2, paciente.getRestricaoAlimentar());
+        stmtInsercao.setString(3, paciente.getAlergias());
+        stmtInsercao.setString(4, paciente.getPreferencias());
+        stmtInsercao.setString(5, paciente.getQuarto());
+        stmtInsercao.executeUpdate();
+
+        System.out.println("Paciente cadastrado com sucesso!");
+
+        } 
+        catch (SQLException e) {
+        System.out.println(" Erro ao inserir paciente: " + e.getMessage());
         }
     }
 
-    // READ
     public List<Paciente> listar() {
-        List<Paciente> lista = new ArrayList<>();
-        String sql = "SELECT * FROM Paciente";
-        try (Connection conn = getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        List<Paciente> pacientes = new ArrayList<>();
+        String sql = "SELECT p.*, u.Nome " + 
+                     "FROM paciente p " +
+                     "JOIN usuario u ON p.FK_ID_User = u.ID_User " +
+                     "ORDER BY u.Nome";
+
+        try (Connection conn = Conexao.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
-                lista.add(new Paciente(
-                        rs.getInt("ID_Paciente"),
-                        rs.getInt("ID_User"),
-                        rs.getString("Restricao_Alimentar"),
-                        rs.getString("Alergias"),
-                        rs.getString("Preferencias"),
-                        rs.getString("Quarto")
-                ));
+                Paciente p = new Paciente();
+                p.setIdPaciente(rs.getInt("ID_Paciente"));
+                p.setIdUser(rs.getInt("FK_ID_User"));
+                p.setnome(rs.getString("Nome"));
+                p.setRestricaoAlimentar(rs.getString("Restricao_Alimentar"));
+                p.setAlergias(rs.getString("Alergias"));
+                p.setPreferencias(rs.getString("Preferencias"));
+                p.setQuarto(rs.getString("Quarto"));
+                pacientes.add(p);
             }
+
         } catch (SQLException e) {
             System.out.println("Erro ao listar pacientes: " + e.getMessage());
         }
-        return lista;
+        return pacientes;
     }
-
-    // UPDATE
-    public void atualizar(Paciente p) {
-        String sql = "UPDATE Paciente SET Restricao_Alimentar=?, Alergias=?, Preferencias=?, Quarto=? WHERE ID_Paciente=?";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, p.getRestricaoAlimentar());
-            stmt.setString(2, p.getAlergias());
-            stmt.setString(3, p.getPreferencias());
-            stmt.setString(4, p.getQuarto());
-            stmt.setInt(5, p.getIdPaciente());
-            stmt.executeUpdate();
-            System.out.println("✅ Paciente atualizado!");
-        } catch (SQLException e) {
-            System.out.println("Erro ao atualizar paciente: " + e.getMessage());
-        }
-    }
-
-    // DELETE
-    public void deletar(int idPaciente) {
-        String sql = "DELETE FROM Paciente WHERE ID_Paciente=?";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idPaciente);
-            stmt.executeUpdate();
-            System.out.println("🗑️ Paciente removido!");
-        } catch (SQLException e) {
-            System.out.println("Erro ao deletar paciente: " + e.getMessage());
-        }
-    }
+    
 }
+
 
