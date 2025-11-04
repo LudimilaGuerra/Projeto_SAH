@@ -9,11 +9,11 @@ import java.util.List;
 
 public class RepositorioRefeicao {
     /**
-     * @param idPaciente O ID do paciente a ser verificado (FK_Paciente)
+     * @param idPaciente 
      * @return true se o paciente for encontrado, false caso contrário
      */
     public boolean pacienteExiste(int idPaciente) {
-        // Query para verificar a existência na tabela 'Paciente'
+        // Query para verificar a existência
         String sql = "SELECT 1 FROM Paciente WHERE ID_Paciente = ?"; 
         
         try (Connection conn = Conexao.getConnection();
@@ -32,7 +32,6 @@ public class RepositorioRefeicao {
 
 
     public void inserir(Refeicao r) {
-        // VERIFICAR O REPOSITÓRIO ANTES DE INSERIR ---
         if (!pacienteExiste(r.getIdPaciente())) {
             System.out.println("Erro de Integridade: Não é possível cadastrar a refeição. O Paciente com ID " + r.getIdPaciente() + " não existe.");
             return; // Interrompe a execução
